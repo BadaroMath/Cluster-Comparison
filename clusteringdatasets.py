@@ -18,22 +18,22 @@ np.random.seed(0)
 # of the algorithms, but not too big to avoid too long running times
 # ============
 
-Compound = pd.read_csv("F:/clusteringdatasets/Compound.csv")
+Compound = pd.read_csv("F:/TG2/results/clusteringdatasets/Compound.csv")
 Compound = Compound.drop('label', axis=1)
 Compound = Compound.values
-Aggregation = pd.read_csv("F:/clusteringdatasets/Aggregation.csv")
+Aggregation = pd.read_csv("F:/TG2/results/clusteringdatasets/Aggregation.csv")
 Aggregation = Aggregation.drop('label', axis=1)
 Aggregation = Aggregation.values
-pathbased = pd.read_csv("F:/clusteringdatasets/pathbased.csv")
+pathbased = pd.read_csv("F:/TG2/results/clusteringdatasets/pathbased.csv")
 pathbased = pathbased.drop('label', axis=1)
 pathbased = pathbased.values
-s2 = pd.read_csv("F:/clusteringdatasets/s2.csv")
+s2 = pd.read_csv("F:/TG2/results/clusteringdatasets/s2.csv")
 s2 = s2.drop('labels', axis=1)
 s2 = s2.values
-flame = pd.read_csv("F:/clusteringdatasets/flame.csv")
+flame = pd.read_csv("F:/TG2/results/clusteringdatasets/flame.csv")
 flame = flame.drop('label', axis=1)
 flame = flame.values
-face = pd.read_csv("F:/clusteringdatasets/face.csv")
+face = pd.read_csv("F:/TG2/results/clusteringdatasets/face.csv")
 face = face.values
 #%%
 
