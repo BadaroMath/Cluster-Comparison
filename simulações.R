@@ -20,7 +20,7 @@ operator <- function(BarOmega, K, p, n){
 ################ General (individual)  ##############
 
 
-for (BarOmega in seq(0, 0.6, 0.01)){
+for (BarOmega in seq(0, 0.61, 0.01)){
   operator(BarOmega, 3, 5, 2000)
 }
 

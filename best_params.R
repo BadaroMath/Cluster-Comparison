@@ -4,7 +4,7 @@ library(kernlab) # para o método espectral
 
 # Carrega o conjunto de dados X
 
-sim <- read_csv("F:/TG2/results/simulações/simdataset_0.1_3_5_200000.csv")
+sim <- read_csv("F:/TG2/results/simulações/simdataset_0_8_3_2000.csv")
 
 # Defina o valor inicial de eps
 eps <- 0.5

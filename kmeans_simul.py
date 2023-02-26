@@ -36,7 +36,7 @@ for K in range(2, 40, 1):
     except:
         print("Deu erro, mas continuando...")
 
-
+import numpy as np
 for n in np.concatenate((np.arange(100, 5100, 100), np.arange(5000, 100100, 10000), np.arange(100000, 2000100, 100000))):
     try:
         kmeans_simul(0, 3, 5, n)
