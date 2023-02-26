@@ -19,21 +19,27 @@ np.random.seed(0)
 # ============
 
 Compound = pd.read_csv("F:/TG2/results/clusteringdatasets/Compound.csv")
+Compound_label = Compound['label']
 Compound = Compound.drop('label', axis=1)
 Compound = Compound.values
 Aggregation = pd.read_csv("F:/TG2/results/clusteringdatasets/Aggregation.csv")
+Aggregation_label = Aggregation['label']
 Aggregation = Aggregation.drop('label', axis=1)
 Aggregation = Aggregation.values
 pathbased = pd.read_csv("F:/TG2/results/clusteringdatasets/pathbased.csv")
+pathbased_label = pathbased['label']
 pathbased = pathbased.drop('label', axis=1)
 pathbased = pathbased.values
 s2 = pd.read_csv("F:/TG2/results/clusteringdatasets/s2.csv")
+s2_label = s2['labels']
 s2 = s2.drop('labels', axis=1)
 s2 = s2.values
 flame = pd.read_csv("F:/TG2/results/clusteringdatasets/flame.csv")
+flame_label = flame['label']
 flame = flame.drop('label', axis=1)
 flame = flame.values
 face = pd.read_csv("F:/TG2/results/clusteringdatasets/face.csv")
+#face_label = face['labels']
 face = face.values
 #%%
 
@@ -218,9 +224,22 @@ for i_dataset, (dataset, algo_params) in enumerate(datasets):
         df = pd.DataFrame(y_pred)
         df.columns = ['Y_' + column for column in df.columns.astype(str)]
         df_final = pd.concat([df_x, df], axis=1)
+        if i_dataset == 0:
+            df_final['labels'] =  Compound_label
+        elif i_dataset == 1:
+            df_final['labels'] =  Aggregation_label
+        elif i_dataset == 2:
+            df_final['labels'] =  pathbased_label
+        elif i_dataset == 3:
+            df_final['labels'] =  s2_label    
+        elif i_dataset == 4:
+            df_final['labels'] =  flame_label     
+        else:
+            print("face não tem label")                                        
   
-        #file = open(f"F:/resultados_clusters/toydataset_{name}_{i_dataset}_results.csv", 'a')
-        #df_final.to_csv(f"F:/resultados_clusters/toydataset_{name}_{i_dataset}_results.csv", index=False)     
+        #file = open(f"F:/resultados_clusters/clustering_{name}_{i_dataset}_results.csv", 'a')
+        df_final.to_csv(f"F:/TG2/results/clusteringdatasets_results/clustering_{name}_{i_dataset}_results.csv", 
+                        index=False)     
 
         #if name == "Fuzzy C-means":
         #    fuzzy_labels = np.argmax(y_pred, axis=1)

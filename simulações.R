@@ -1,6 +1,6 @@
 
 library("MixSim")
-setwd("C:/Users/maatt/Documents/Estatística/TG2")
+setwd("F:/TG2/results/simulações")
 options(scipen=999)
 ###################### Simulation ##########################################
 ###############################################################################
@@ -9,20 +9,11 @@ options(scipen=999)
 operator <- function(BarOmega, K, p, n){
   Q <- MixSim(BarOmega = BarOmega, K = K, p = p, resN = 100000)
   A <- simdataset(n = n, Pi = Q$Pi, Mu = Q$Mu, S = Q$S)
-  write.csv(A, paste("J:/simulações/simdataset_",
+  write.csv(A, paste("simdataset_",
                      BarOmega,"_", K,"_", p,"_", n,".csv", sep=""), row.names=FALSE)
   cat("BarOmega=",BarOmega,"Clusters=",K, "Components=",p, "Obs=",n, "\n")
 }
 
-for (n in c(seq(100, 5000, 500),seq(5000, 100000, 10000), seq(100000, 500000, 100000))) {
-  for (p in c(3,5,7,10,15,seq(20,100, 20))) {
-    for (BarOmega in seq(0, 0.50, .05)) {
-      for (K in c(seq(2,10,1), seq(15, 30, 5))) {
-        operator(BarOmega, K, p, n)
-      }
-    }
-  }
-}
 
 
 
@@ -111,9 +102,9 @@ for (p in c(seq(2,20, 2), seq(30, 40, 10))){
 ################ Cluster & Components  ##############
 
 
-for (K in c(3, 5, 7, 10)){
+for (K in c(3, 5, 7, 10, 15, 20, 25)){
   for (p in c(3, 5, 8, 10, 15, 30, 50)){
-    operator(0, K, p, 1000)
+    operator(0, K, p, 10000)
   }
 }
 
@@ -124,7 +115,7 @@ for (K in c(3, 5, 7, 10)){
 
 for (n in seq(1000, 10000, 1000)){
   for (p in c(3, 5, 8, 10, 15, 30, 50)){
-    operator(0, K, p, 1000)
+    operator(0, 3, p, n)
   }
 }
 
