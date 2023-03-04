@@ -279,7 +279,16 @@ def falt7():
         try:
             optimize_parameters(0.2, 3, 5, n)
         except:
-            print("Deu erro, mas continuando...")            
+            print("Deu erro, mas continuando...")    
+
+
+def falt8():
+    for n in [1000, 5000, 50000, 1000000, 5000000]:
+        for p in [3, 5, 8, 10, 15, 30, 50]:
+            try:
+                optimize_parameters(0, 3, p, n)
+            except:
+                print("Deu erro, mas continuando...")    
 
 t1 = threading.Thread(target=falt1)
 t2 = threading.Thread(target=falt2)
@@ -287,7 +296,8 @@ t3 = threading.Thread(target=falt3)
 t4 = threading.Thread(target=falt4)
 t5 = threading.Thread(target=falt5)
 t6 = threading.Thread(target=falt6)
-t7 = threading.Thread(target=falt7)            
+t7 = threading.Thread(target=falt7) 
+t8 = threading.Thread(target=falt8)
 
 
 t1.start()
@@ -297,6 +307,7 @@ t4.start()
 t5.start()
 t6.start()
 t7.start()
+t8.start()
 
 t1.join()
 t2.join()
@@ -305,3 +316,8 @@ t4.join()
 t5.join()
 t6.join()
 t7.join()
+t8.join()
+
+
+
+
