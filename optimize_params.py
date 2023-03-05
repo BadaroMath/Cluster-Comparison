@@ -3,7 +3,6 @@ from sklearn.metrics import adjusted_rand_score
 import numpy as np
 import pandas as pd
 import time
-import threading
 
 # Carrega o conjunto de dados X e seus rótulos verdadeiros Y
 
@@ -16,8 +15,8 @@ def optimize_parameters(BarOmega, K, p, n, default_param = False, high_overlap =
     Y = pd.read_csv(path)["id"].values
     # Configurações dos parâmetros do DBSCAN
     if high_overlap is True:
-        eps_values = np.arange(0.2, 0.65, 0.05)
-        minPts_values = [1] + np.arange(2, 50, 2).tolist()
+        eps_values = [0.1]
+        minPts_values = [1] + np.arange(2, 40, 2).tolist()
     else:
         eps_values = np.arange(0.1, 2.5, 0.05)
         minPts_values = [1] + np.arange(2, 32, 2).tolist()
@@ -87,6 +86,10 @@ def optimize_parameters(BarOmega, K, p, n, default_param = False, high_overlap =
     print(f"Best Spectral Clustering parameter with score: {best_sc_params['score']}")
 
 
+
+
+
+
 for BarOmega in range(0, 61, 1):
     if BarOmega == 0:
         BarOmea = int(0)
@@ -106,7 +109,7 @@ for K in range(2, 40, 1):
         print("Deu erro, mas continuando...")
 
 
-for n in np.concatenate((np.arange(100, 5100, 100), np.arange(5000, 100100, 10000), np.arange(100000, 2000100, 100000))):
+for n in list(range(100, 5001, 100)) + list(range(5000, 100001, 10000)) + list(range(100000, 2000001, 100000)):
     try:
         optimize_parameters(0, 3, 5, n, default_param = True)
     except:
@@ -221,7 +224,7 @@ for K in [3, 5, 7, 10, 15, 20, 25]:
                         
     ################ Obs & Components  ##############
 
-for n in [1000, 5000, 50000, 1000000, 5000000]:
+for n in [1000, 5000, 50000, 1000000]:
     for p in [3, 5, 8, 10, 15, 30, 50]:
         try:
             optimize_parameters(0, 3, p, n)
@@ -232,92 +235,66 @@ for n in [1000, 5000, 50000, 1000000, 5000000]:
 
 
 
-def falt1():
-    for n in range(200000, 2100000, 100000):
-        try:
-            optimize_parameters(0, 3, 5, n, default_param = True)
-        except:
-            print("Deu erro, mas continuando...")
 
-def falt2():
-    for n in range(200000, 2100000, 100000):
-        try:
-            optimize_parameters(0.05, 3, 5, n, default_param = True)
-        except:
-            print("Deu erro, mas continuando...")
 
-def falt3():
-    for k in range(2, 41, 1):
-        try:
-            optimize_parameters(0.1, k, 3, 5000)
-        except:
-            print("Deu erro, mas continuando...")
 
-def falt4():
-    for n in range(200000, 2100000, 100000):
-        try:
-            optimize_parameters(0.1, 3, 5, n)
-        except:
-            print("Deu erro, mas continuando...")
 
-def falt5():
-    for k in range(17, 41, 1):
+for n in [1000, 5000, 50000, 1000000]:
+    for p in [3, 5, 8, 10, 15, 30, 50]:
         try:
-            optimize_parameters(0.15, k, 3, 5000)
-        except:
-            print("Deu erro, mas continuando...")                        
-
-def falt6():
-    for k in range(17, 41, 1):
-        try:
-            optimize_parameters(0.2, k, 3, 5000)
-        except:
-            print("Deu erro, mas continuando...")             
-
-def falt7():
-    for n in range(200000, 2100000, 100000):
-        try:
-            optimize_parameters(0.2, 3, 5, n)
+            optimize_parameters(0, 3, p, n)
         except:
             print("Deu erro, mas continuando...")    
 
 
-def falt8():
-    for n in [1000, 5000, 50000, 1000000, 5000000]:
-        for p in [3, 5, 8, 10, 15, 30, 50]:
-            try:
-                optimize_parameters(0, 3, p, n)
-            except:
-                print("Deu erro, mas continuando...")    
-
-t1 = threading.Thread(target=falt1)
-t2 = threading.Thread(target=falt2)
-t3 = threading.Thread(target=falt3)
-t4 = threading.Thread(target=falt4)
-t5 = threading.Thread(target=falt5)
-t6 = threading.Thread(target=falt6)
-t7 = threading.Thread(target=falt7) 
-t8 = threading.Thread(target=falt8)
-
-
-t1.start()
-t2.start()
-t3.start()
-t4.start()
-t5.start()
-t6.start()
-t7.start()
-t8.start()
-
-t1.join()
-t2.join()
-t3.join()
-t4.join()
-t5.join()
-t6.join()
-t7.join()
-t8.join()
+for p in [60,70]:
+    try:
+        optimize_parameters(0.05, 3, p, 5000)
+    except:
+        print("Deu erro, mas continuando...")    
 
 
 
+
+kmeans_simul(0, 40, 3, 5000)
+kmeans_simul(0, 3, 5, 50000)
+kmeans_simul(0.05, 3, 5, 50000)
+kmeans_simul(0.1, 3, 5, 50000)
+kmeans_simul(0.15, 3, 5, 50000)
+kmeans_simul(0.2, 3, 5, 50000)
+kmeans_simul(0, 3, 3, 50000)
+kmeans_simul(0, 3, 5, 50000)
+kmeans_simul(0, 3, 8, 50000)
+kmeans_simul(0, 3, 10, 50000)
+kmeans_simul(0, 3, 15, 50000)
+kmeans_simul(0, 3, 30, 50000)
+kmeans_simul(0, 3, 50, 50000)
+optimize_parameters(0, 40, 3, 5000)
+optimize_parameters(0, 3, 5, 50000)
+optimize_parameters(0, 3, 5, 1000000)
+optimize_parameters(0.05, 3, 5, 50000)
+optimize_parameters(0.05, 3, 5, 1000000)
+optimize_parameters(0.05, 3, 70, 5000)
+optimize_parameters(0.1, 3, 5, 50000)
+optimize_parameters(0.1, 3, 5, 1000000)
+optimize_parameters(0.1, 3, 50, 5000)
+optimize_parameters(0.15, 3, 5, 50000)
+optimize_parameters(0.15, 3, 5, 1000000)
+optimize_parameters(0.2, 3, 5, 50000)
+optimize_parameters(0.2, 3, 5, 1000000)
+optimize_parameters(0, 25, 3, 10000)
+optimize_parameters(0, 3, 3, 50000)
+optimize_parameters(0, 3, 5, 50000)
+optimize_parameters(0, 3, 8, 50000)
+optimize_parameters(0, 3, 10, 50000)
+optimize_parameters(0, 3, 15, 50000)
+optimize_parameters(0, 3, 30, 50000)
+optimize_parameters(0, 3, 50, 50000)
+optimize_parameters(0, 3, 3, 1000000)
+optimize_parameters(0, 3, 5, 1000000)
+optimize_parameters(0, 3, 8, 1000000)
+optimize_parameters(0, 3, 10, 1000000)
+optimize_parameters(0, 3, 15, 1000000)
+optimize_parameters(0, 3, 30, 1000000)
+optimize_parameters(0, 3, 50, 1000000)
 

@@ -199,3 +199,7 @@ for n in list(range(100, 5001, 100)) + list(range(5000, 100001, 10000)) + list(r
             kmeans_simul(0, 3, p, n)
         except:
             print("Deu erro, mas continuando...")
+
+
+
+

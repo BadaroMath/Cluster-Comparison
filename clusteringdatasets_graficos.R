@@ -87,8 +87,7 @@ compound_Gaussian_Mixture <- read_csv(
   "clustering_Gaussian_Mixture_0_results.csv")
 
 aggregation_K_means <- read_csv("clustering_K-means_1_results.csv")
-aggregation_Fuzzy_C_means <-
-  read_csv("clustering_Fuzzy_C-means_1_results.csv")
+aggregation_Fuzzy_C_means <- read_csv("clustering_Fuzzy_C-means_1_results.csv")
 aggregation_Fuzzy_C_means <- aggregation_Fuzzy_C_means %>%
   mutate(Cluster = apply(select(., starts_with("Y_")), 1,
                          function(x)

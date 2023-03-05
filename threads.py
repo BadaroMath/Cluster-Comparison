@@ -34,14 +34,14 @@ for BarOmega in range(0, 61, 1):
     else:
         None
 
-for K in range(2, 40, 1):
+for K in [2, 5, 10, 20, 40]:
     try:
         params(0, K, 3, 5000)
     except:
         print("Deu erro, mas continuando...")
 
 
-for n in np.concatenate((np.arange(100, 5100, 100), np.arange(5000, 100100, 10000), np.arange(100000, 2000100, 100000))):
+for n in [100, 500, 1000, 5000, 50000, 1000000]:
     try:
         params(0, 3, 5, n)
     except:
@@ -56,13 +56,13 @@ for p in np.concatenate((np.arange(2, 21, 2), np.arange(30, 210, 10))):
 
 ################ General (individual) BarOmega = 0.05  ##############
 
-for K in range(2, 41):
+for K in [2, 5, 10, 20, 40]:
     try:
         params(0.05, K, 3, 5000)
     except:
         print("Deu erro, mas continuando...")
 
-for n in list(range(100, 5001, 100)) + list(range(5000, 100001, 10000)) + list(range(100000, 2000001, 100000)):
+for n in [100, 500, 1000, 5000, 50000, 1000000]:
     try:
         params(0.05, 3, 5, n)
     except:
@@ -77,14 +77,14 @@ for p in list(range(2, 21, 2)) + list(range(30, 71, 10)):
 
 ################ General (individual) BarOmega = 0.1  ##############
 
-for K in range(2, 41):
+for K in [2, 5, 10, 20, 40]:
     try:
         params(0.1, K, 3, 5000)
     except:
         print("Deu erro, mas continuando...")
 
 
-for n in list(range(100, 5001, 100)) + list(range(5000, 100001, 10000)) + list(range(100000, 2000001, 100000)):
+for n in [100, 500, 1000, 5000, 50000, 1000000]:
     try:
         params(0.1, 3, 5, n)
     except:
@@ -100,14 +100,14 @@ for p in list(range(2, 21, 2)) + list(range(30, 51, 10)):
 
 ################ General (individual) BarOmega = 0.15  ##############
 
-for K in range(2, 41):
+for K in [2, 5, 10, 20, 40]:
     try:
         params(0.15, K, 3, 5000)
     except:
         print("Deu erro, mas continuando...")
 
 
-for n in list(range(100, 5001, 100)) + list(range(5000, 100001, 10000)) + list(range(100000, 2000001, 100000)):
+for n in [100, 500, 1000, 5000, 50000, 1000000]:
     try:
         params(0.15, 3, 5, n)
     except:
@@ -124,13 +124,13 @@ for p in list(range(2, 21, 2)) + list(range(30, 41, 10)):
 ################ General (individual) BarOmega = 0.20  ##############
 
 
-for K in range(2, 41):
+for K in [2, 5, 10, 20, 40]:
     try:
         params(0.2, K, 3, 5000)
     except:
         print("Deu erro, mas continuando...")
 
-for n in list(range(100, 5001, 100)) + list(range(5000, 100001, 10000)) + list(range(100000, 2000001, 100000)):
+for n in [100, 500, 1000, 5000, 50000, 1000000]:
     try:
         params(0.2, 3, 5, n)
     except:
@@ -156,7 +156,7 @@ for K in [3, 5, 7, 10, 15, 20, 25]:
                     
 ################ Obs & Components  ##############
 
-for n in list(range(100, 5001, 100)) + list(range(5000, 100001, 10000)) + list(range(100000, 2000001, 100000)):
+for n in [1000, 5000, 50000, 1000000]:
     for p in [3, 5, 8, 10, 15, 30, 50]:
         try:
             params(0, 3, p, n)
@@ -165,19 +165,3 @@ for n in list(range(100, 5001, 100)) + list(range(5000, 100001, 10000)) + list(r
 
 
 
-
-import pandas as pd
-
-df = pd.read_csv('F:/TG2/results/resultados_clusters/params_prog.txt', sep = ",", header = None, names = ["BarOmega", "K", "p", "n"])
-
-df = df.drop_duplicates()
-
-df2 = pd.read_csv("F:/TG2/results/resultados_clusters/time_results.txt", sep = ",", header = None, names = ["Method", "BarOmega", "K", "p", "n", "time"])
-
-df2.drop(["Method", "time"], axis = 1, inplace = True)
-df2 = df2.drop_duplicates()
-merged = pd.merge(df2, df, on=['BarOmega', 'K', 'p', 'n'], how='left', indicator=True)
-
-not_in_df2 = merged[merged['_merge'] != 'both']
-
-print(not_in_df2)
