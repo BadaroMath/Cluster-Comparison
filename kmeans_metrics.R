@@ -9,201 +9,172 @@ library(dplyr)
 library(colorspace)
 library(clusterCrit)
 
+
 setwd("F:/TG2")
+options(scipen=999)
 
 
 metrics <- function(BarOmega, K, P, N){
-  for(Method in c("DBSCAN", "spectral", "Gaussian_Mixture",
-                  "K-means", "Fuzzy_C-means")){
-    cat("--------------------------", 
-        "\n", "Method: ", Method, "\n", "BarOmega: ", 
-        BarOmega, "\n", "K: ", K, "\n", "P: ", P, "\n", "N: ", N)
-    labeled <- tryCatch(
-      read_csv(paste("F:/TG2/results/resultados_clusters/", Method, "_", 
-                     BarOmega,"_", K,"_", P,"_", N, "_results",".csv", 
-                     sep=""), 
-               show_col_types = FALSE),
-      error = function(e) {
-        return("FALSE")
-      }
-    ) 
-      
-    dados <- tryCatch(
-      read_csv(paste("F:/TG2/results/simulações/simdataset_", 
-                     BarOmega,"_", K,"_", P,"_", N,".csv", 
-                     sep=""),
-               show_col_types = FALSE),
-      error = function(e) {
-        return("FALSE")
-      }
+  cat("--------------------------", 
+      "\n", "BarOmega:", 
+      BarOmega,"\n","K:", K, "\n", "P:", P)
+  cat("\n", "N:", N,"\n")  
+  dados <- read_csv(paste("F:/TG2/results/resultados_gerais/joined_", 
+                          BarOmega, "_", K, "_", P, "_", N, ".csv", sep=""), 
+                    show_col_types = FALSE)
+  methods <- c("DBSCAN", "spectral", "Gaussian_Mixture", "K_means", "Fuzzy_C_means")
+  # Executar operações em paralelo
+  for(Method in methods){ 
+    cat("\n", "Method:", Method,"\n") 
+    if(length(unique(dados[,Method])) != length(unique(dados[,"id"]))) {
+      cat("Partition lengths do not match for", Method, "\n")
+      return(NULL)
+    }
+    if(sum(is.na(dados[[Method]])) > 0) {
+      print("A coluna y possui valores NA.")
+    }else{
+    indexs <- intCriteria(
+      as.matrix(select(dados, -id, -DBSCAN, -spectral, 
+                       -Gaussian_Mixture, -K_means, -Fuzzy_C_means)),
+      as.integer(unlist(dados[,Method])),
+      c("Dunn", "Silhouette")
     )
-    if(length(dados) > 1 && length(labeled) > 1){
-      if(Method == "Fuzzy_C-means"){
-        labeled <- labeled %>%
-          mutate(
-            Cluster = apply(select(., starts_with("Y_")), 1,
-                            function(x) which.max(x) - 1)
-                ) %>%
-          select(id, Cluster) %>%
-          rename(Y = Cluster)
-      }
-        indexs <- intCriteria(
-          as.matrix(dados[, -which(names(dados) == "id")]),
-          as.integer(unlist(labeled$Y)), 
-          c("Dunn", "Silhouette")
-          )
-        cat(toString(
-                    c(                        
-                      Method,
-                      BarOmega,
-                      K,
-                      P,
-                      N,
-                      round(RandIndex(labeled$id, labeled$Y)$R, 3),
-                      round(RandIndex(labeled$id, labeled$Y)$AR, 3),
-                      round(ClassProp(labeled$id, labeled$Y), 3),
-                      round(VarInf(labeled$id, labeled$Y), 3),
-                      round(indexs$dunn, 3),
-                      round(indexs$silhouette, 3)
-                      )
-        ),
-        file="F:/TG2/results/resultados_metricas/metrics.txt", 
-        append = TRUE, sep="\n")
-    }else{return("Arquivos inexistentes.")}
+    cat(toString(
+      c(                        
+        Method,
+        BarOmega,
+        K,
+        P,
+        N,
+        round(RandIndex(dados$id, dados[[Method]])$R, 3),
+        round(RandIndex(dados$id, dados[[Method]])$AR, 3),
+        NaN,#round(ClassProp(dados$id, dados[[Method]]), 3),
+        round(VarInf(dados$id, dados[[Method]]), 3),
+        round(indexs$dunn, 3),
+        round(indexs$silhouette, 3)
+      )
+    ),
+    file="F:/TG2/results/resultados_metricas/total_metrics.txt", 
+    append = TRUE, sep="\n")
+    }
   }
 }
 
 
-################ BarOmega Variation  ##############
-
-
-for (BarOmega in seq(0, 0.61, 0.01)){
-  metrics(BarOmega, 3, 5, 5000)
-}
-
-
-################ Clusters Variation  ##############
-for (K in c(20, 40)){
-  metrics(0, K, 3, 5000)
-}
-
-for (K in c(2, 5, 10, 20, 40)){
-  metrics(0.05, K, 3, 5000)
-}
-
-for (K in c(2, 5, 10, 20, 40)){
-  metrics(0.1, K, 3, 5000)
-}
-
-for (K in c(2, 5, 10, 20, 40)){
-  metrics(0.15, K, 3, 5000)
-}
-
-for (K in c(2, 5, 10, 20, 40)){
-  metrics(0.2, K, 3, 5000)
-}
-
-################ Dimensions Variation  ##############
-
-for (p in c(seq(2,80, 2), seq(30, 200, 10))){
-  metrics(0, 3, p, 5000)
-}
-
-for (p in c(seq(2,20, 2), seq(30, 70, 10))){
-  metrics(0.05, 3, p, 5000)
-}
-
-for (p in c(seq(2,20, 2), seq(30, 50, 10))){
-  metrics(0.1, 3, p, 5000)
-}
-
-for (p in c(seq(2,20, 2), seq(30, 40, 10))){
-  metrics(0.15, 3, p, 5000)
-}
-
-for (p in c(seq(2,20, 2), seq(30, 30, 10))){
-  metrics(0.2, 3, p, 5000)
-}
-
-
-################ Nrows Variation  ##############
-
-for (n in c(100, 500, 1000, 5000, 50000, 1000000)){
-  metrics(0, 3, 5, n)
-}
-
-for (n in c(100, 500, 1000, 5000, 50000, 1000000)){
-  metrics(0.05, 3, 5, n)
-}
-
-for (n in c(100, 500, 1000, 5000, 50000, 1000000)){
-  metrics(0.1, 3, 5, n)
-}
-
-for (n in c(100, 500, 1000, 5000, 50000, 1000000)){
-  metrics(0.15, 3, 5, n)
-}
-
-for (n in c(100, 500, 1000, 5000, 50000, 1000000)){
-  metrics(0.2, 3, 5, n)
-}
-
-
-################ Cluster & Components  ##############
-
-
-for (K in c(3, 5, 7, 10, 15, 20, 25)){
-  for (p in c(3, 5, 8, 10, 15, 30, 50)){
-    metrics(0, K, p, 10000)
-  }
-}
-
-
-
-################ Obs & Components  ##############
-
-
-for (n in c(1000, 5000, 50000, 1000000)){
-  for (p in c(3, 5, 8, 10, 15, 30, 50)){
-    metrics(0, 3, p, n)
-  }
-}
+#grid_bomg <- expand.grid(BarOmega = seq(0, 0.6, 0.01),
+#                         K = c(3),
+#                         P = c(5),
+#                         N = c(5000))
+#grid_n <- expand.grid(BarOmega = c(0, 0.05, 0.1, 0.15, 0.2),
+#                      K = c(3),
+#                      P = c(5),
+#                      N = c(50000, 1000000))
+#grid_k <- expand.grid(BarOmega = c(0, 0.05, 0.1, 0.15, 0.2),
+#                      K = c(3, 5, 10, 20, 40),
+#                      P = c(5),
+#                      N = c(5000))
+#grid_p1 <- expand.grid(BarOmega = c(0),
+#                       K = c(3),
+#                       P = c(seq(30, 200, 10)),
+#                       N = c(5000))
+#grid_p2 <- expand.grid(BarOmega = c(0.05),
+#                       K = c(3),
+#                       P = c(seq(2,20, 2), seq(30, 60, 10)),
+#                       N = c(5000))
+#grid_p3 <- expand.grid(BarOmega = c(0.1),
+#                       K = c(3),
+#                       P = c(seq(2,20, 2), seq(30, 50, 10)),
+#                       N = c(5000))
+#grid_p4 <- expand.grid(BarOmega = c(0.15),
+#                       K = c(3),
+#                       P = c(seq(2,20, 2), seq(30, 40, 10)),
+#                       N = c(5000))
+#grid_p5 <- expand.grid(BarOmega = c(0.2),
+#                       K = c(3),
+#                       P = c(seq(2,20, 2), seq(30, 30, 10)),
+#                       N = c(5000))
+#grid_kp <- expand.grid(BarOmega = c(0),
+#                       K = c(3, 5, 7, 10, 15, 20, 25),
+#                       P = c(3, 5, 8, 10, 15, 30, 50),
+#                       N = c(10000))
+#grid_pn <- expand.grid(BarOmega = c(0),
+#                       K = c(3),
+#                       P = c(3, 5, 8, 10, 15, 30, 50),
+#                       N = c(1000, 5000, 50000, 1000000))
+#
+#
+#merged_grid <- rbind(grid_k,grid_n)
+#
+#
+#merged_grid <- as.data.frame(merged_grid)
+#merged_grid <- distinct(merged_grid, .keep_all = TRUE)
+#
+#
+#apply(merged_grid, 1, function(x) metrics(x[1], x[2], x[3], x[4]))
 
 
 
 
-metrics <- read_csv("F:/TG2/results/resultados_metricas/metrics.txt",
-                   show_col_types = FALSE, 
-                   col_names = c(
-                     "Method", 
-                     "BarOmega", 
-                     "K", 
-                     "P", 
-                     "N", 
-                     "RI", 
-                     "AR", 
-                     "ClassProp",
-                     "VI",
-                     "DI"
-                     )
-                   )
+metrics(0.35, 3, 5, 5000)
+metrics(0.41, 3, 5, 5000)
+metrics(0.47, 3, 5, 5000)
+metrics(0.57, 3, 5, 5000)
+metrics(0.00, 3, 22, 5000)
+metrics(0.00, 3, 24, 5000)
+metrics(0.00, 3, 26, 5000)
+metrics(0.00, 3, 28, 5000)
 
-labeled <- tryCatch(
-  read_csv(paste("F:/TG2/results/resultados_clusters/K-means_0_3_5_5000_results.csv", 
-                 sep=""), 
-           show_col_types = FALSE),
-  error = function(e) {
-    return("FALSE")
-  }
-) 
-dados <- tryCatch(
-  read_csv(paste("F:/TG2/results/simulações/simdataset_0_3_5_5000.csv", 
-                 sep=""),
-           show_col_types = FALSE),
-  error = function(e) {
-    return("FALSE")
-  }
+
+
+
+
+
+
+Method <- "Gaussian_Mixture"
+BarOmega <- 0
+K <- 3
+P <- 5
+N <- 1000000
+dados <- read_csv(paste("F:/TG2/results/resultados_gerais/joined_", 
+                        BarOmega, "_", K, "_", P, "_", N, ".csv", sep=""), 
+                  show_col_types = FALSE)
+indexs <- intCriteria(
+  as.matrix(select(dados, -id, -DBSCAN, -spectral, 
+                   -Gaussian_Mixture, -K_means, -Fuzzy_C_means)),
+  as.integer(unlist(dados[,Method])),
+  c("Silhouette")
 )
+                  
+
+round(RandIndex(dados$id, dados[[Method]])$R, 3)
+round(RandIndex(dados$id, dados[[Method]])$AR, 3)
+round(VarInf(dados$id, dados[[Method]]), 3)
+round(indexs$dunn, 3)
+round(indexs$silhouette, 3)
+
+
+
+metrics <- read_csv("F:/TG2/results/resultados_metricas/total_metrics.txt",
+                    show_col_types = FALSE, 
+                    col_names = c(
+                      "Method", 
+                      "BarOmega", 
+                      "K", 
+                      "P", 
+                      "N", 
+                      "RI", 
+                      "AR", 
+                      "ClassProp",
+                      "VI",
+                      "DI",
+                      "SI"
+                    )
+)
+check <- metrics %>%
+  select(BarOmega, K, P, N) %>%
+  distinct()
+
+result <- anti_join(merged_grid, check, by = c("BarOmega", "K", "P", "N"))
 
 
 

@@ -3,24 +3,28 @@ from sklearn.metrics import adjusted_rand_score
 import numpy as np
 import pandas as pd
 import time
+import warnings
 
 # Carrega o conjunto de dados X e seus rótulos verdadeiros Y
 
 
-def optimize_parameters(BarOmega, K, p, n, default_param = False, high_overlap = False):
+def optimize_parameters(BarOmega, K, p, n, default_param = False, high_overlap = False, high_dimensions = False):
 
     print(f"Start with BarOmega: {BarOmega}, K: {K}, p: {p}, n: {n}")
     path = f"F:/TG2/results/simulações/simdataset_{BarOmega}_{K}_{p}_{n}.csv"
     X = pd.read_csv(path).drop(columns=["id"]).values
     Y = pd.read_csv(path)["id"].values
     # Configurações dos parâmetros do DBSCAN
-    if high_overlap is True:
-        eps_values = [0.1]
+    if high_dimensions is True:
+        eps_values = np.arange(1, 2.5, 0.1)
         minPts_values = [1] + np.arange(2, 40, 2).tolist()
+        nn_values = [4] + np.arange(2, 32, 2).tolist()
     else:
-        eps_values = np.arange(0.1, 2.5, 0.05)
+        eps_values = [0.1]
         minPts_values = [1] + np.arange(2, 32, 2).tolist()
-    nn_values = np.arange(2, 32, 2)
+        nn_values = [4]
+    # Configurações dos parâmetros do Spectral Clustering
+    
 
     # Realiza a busca em grade para o DBSCAN
     if default_param is False:
@@ -30,7 +34,7 @@ def optimize_parameters(BarOmega, K, p, n, default_param = False, high_overlap =
                 dbscan = DBSCAN(eps=eps, min_samples=minPts)
                 dbscan_labels = dbscan.fit_predict(X)
                 dbscan_score = adjusted_rand_score(Y, dbscan_labels)
-                #print(f"eps: {eps}, minPts: {minPts}, score: {dbscan_score}")
+                print(f"eps: {eps}, minPts: {minPts}, score: {dbscan_score}")
                 if dbscan_score > best_dbscan_params['score']:
                     best_dbscan_params['eps'] = eps
                     best_dbscan_params['minPts'] = minPts
@@ -57,12 +61,27 @@ def optimize_parameters(BarOmega, K, p, n, default_param = False, high_overlap =
         best_sc_params = {'nn': None, 'score': -1}
         for nn in nn_values:
             sc = SpectralClustering(n_clusters=K, affinity='nearest_neighbors', n_neighbors=nn)
-            sc_labels = sc.fit_predict(X)
+                    # catch warnings related to kneighbors_graph
+            with warnings.catch_warnings():
+                warnings.filterwarnings(
+                    "ignore",
+                    message="the number of connected components of the "
+                    + "connectivity matrix is [0-9]{1,2}"
+                    + " > 1. Completing it to avoid stopping the tree early.",
+                    category=UserWarning,
+                )
+                warnings.filterwarnings(
+                    "ignore",
+                    message="Graph is not fully connected, spectral embedding"
+                    + " may not work as expected.",
+                    category=UserWarning,
+                )
+                sc_labels = sc.fit_predict(X)
             spec_score = adjusted_rand_score(Y, sc_labels)
             if spec_score > best_sc_params['score']:
                 best_sc_params['nn'] = nn
                 best_sc_params['score'] = spec_score
-            #print(f"nn: {nn}, score: {spec_score}")
+            print(f"nn: {nn}, score: {spec_score}")
             if spec_score > 0.9:
                 break
     else:    
@@ -256,45 +275,27 @@ for p in [60,70]:
 
 
 
-kmeans_simul(0, 40, 3, 5000)
-kmeans_simul(0, 3, 5, 50000)
-kmeans_simul(0.05, 3, 5, 50000)
-kmeans_simul(0.1, 3, 5, 50000)
-kmeans_simul(0.15, 3, 5, 50000)
-kmeans_simul(0.2, 3, 5, 50000)
-kmeans_simul(0, 3, 3, 50000)
-kmeans_simul(0, 3, 5, 50000)
-kmeans_simul(0, 3, 8, 50000)
-kmeans_simul(0, 3, 10, 50000)
-kmeans_simul(0, 3, 15, 50000)
-kmeans_simul(0, 3, 30, 50000)
-kmeans_simul(0, 3, 50, 50000)
-optimize_parameters(0, 40, 3, 5000)
-optimize_parameters(0, 3, 5, 50000)
-optimize_parameters(0, 3, 5, 1000000)
+
+
 optimize_parameters(0.05, 3, 5, 50000)
 optimize_parameters(0.05, 3, 5, 1000000)
-optimize_parameters(0.05, 3, 70, 5000)
+optimize_parameters(0.05, 3, 70, 5000, high_dimensions = True)
 optimize_parameters(0.1, 3, 5, 50000)
 optimize_parameters(0.1, 3, 5, 1000000)
-optimize_parameters(0.1, 3, 50, 5000)
+optimize_parameters(0.1, 3, 50, 5000, high_dimensions = True)
 optimize_parameters(0.15, 3, 5, 50000)
 optimize_parameters(0.15, 3, 5, 1000000)
 optimize_parameters(0.2, 3, 5, 50000)
 optimize_parameters(0.2, 3, 5, 1000000)
 optimize_parameters(0, 25, 3, 10000)
-optimize_parameters(0, 3, 3, 50000)
-optimize_parameters(0, 3, 5, 50000)
 optimize_parameters(0, 3, 8, 50000)
-optimize_parameters(0, 3, 10, 50000)
-optimize_parameters(0, 3, 15, 50000)
-optimize_parameters(0, 3, 30, 50000)
-optimize_parameters(0, 3, 50, 50000)
-optimize_parameters(0, 3, 3, 1000000)
-optimize_parameters(0, 3, 5, 1000000)
+optimize_parameters(0, 3, 10, 50000, high_dimensions = True)
+optimize_parameters(0, 3, 15, 50000, high_dimensions = True)
+optimize_parameters(0, 3, 30, 50000, high_dimensions = True)
+optimize_parameters(0, 3, 50, 50000, high_dimensions = True)
 optimize_parameters(0, 3, 8, 1000000)
-optimize_parameters(0, 3, 10, 1000000)
-optimize_parameters(0, 3, 15, 1000000)
-optimize_parameters(0, 3, 30, 1000000)
-optimize_parameters(0, 3, 50, 1000000)
+optimize_parameters(0, 3, 10, 1000000, high_dimensions = True)
+optimize_parameters(0, 3, 15, 1000000, high_dimensions = True)
+optimize_parameters(0, 3, 30, 1000000, high_dimensions = True)
+optimize_parameters(0, 3, 50, 1000000, high_dimensions = True)
 
