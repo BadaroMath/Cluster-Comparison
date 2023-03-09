@@ -111,7 +111,7 @@ grid_n <- expand.grid(BarOmega = c(0, 0.05, 0.1, 0.15, 0.2),
                     P = c(5),
                     N = c(100, 500, 1000, 5000, 50000, 1000000))
 grid_k <- expand.grid(BarOmega = c(0, 0.05, 0.1, 0.15, 0.2),
-                      K = c(3, 5, 10, 20, 40),
+                      K = seq(2, 40),
                       P = c(3),
                       N = c(5000))
 grid_p1 <- expand.grid(BarOmega = c(0),
@@ -150,5 +150,8 @@ merged_grid <- rbind(grid_bomg, grid_n, grid_k, grid_p1, grid_p2, grid_p3, grid_
 merged_grid <- as.data.frame(merged_grid)
 merged_grid <- distinct(merged_grid, .keep_all = TRUE)
 
-
-apply(merged_grid, 1, function(x) join(x[1], x[2], x[3], x[4]))
+gridn <- expand.grid(BarOmega = 0,
+                     K = 3,
+                     P = 5,
+                     N = c(seq(953000, 1000000, 1000)))
+apply(grid_bomg, 1, function(x) join(x[1], x[2], x[3], x[4]))

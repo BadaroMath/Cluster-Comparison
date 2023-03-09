@@ -17,6 +17,15 @@ operator <- function(BarOmega, K, p, n){
 
 
 
+
+gridn <- expand.grid(BarOmega = 0,
+                       K = 3,
+                       P = 5,
+                       N = c(seq(1000, 1000000, 1000)))
+
+apply(gridn, 1, function(x) operator(x[1], x[2], x[3], x[4]))
+
+
 ################ General (individual)  ##############
 
 
@@ -28,7 +37,7 @@ for (K in seq(2, 40, 1)){
   operator(0, K, 3, 5000)
 }
 
-for (n in c(seq(100, 5000, 100), seq(5000, 100000, 10000), seq(100000, 2000000, 100000))){
+for (n in c(seq(115000, 1000000, 1000))){
   operator(0, 3, 5, n)
 }
 
