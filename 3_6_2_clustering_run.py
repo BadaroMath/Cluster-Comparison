@@ -237,63 +237,6 @@ for i_dataset, (dataset, algo_params) in enumerate(datasets):
         else:
             print("face não tem label")                                        
   
-        #file = open(f"F:/resultados_clusters/clustering_{name}_{i_dataset}_results.csv", 'a')
+       
         df_final.to_csv(f"F:/TG2/results/clusteringdatasets_results/clustering_{name}_{i_dataset}_results.csv", 
-                        index=False)     
-
-        #if name == "Fuzzy C-means":
-        #    fuzzy_labels = np.argmax(y_pred, axis=1)
-        #    # Calculando o Índice de Rand ajustado para agrupamentos fuzzy
-        #    rand = round(adjusted_rand_score(y, fuzzy_labels), 3)
-        #    classprop = round(accuracy_score(y, fuzzy_labels), 3)
-        #elif i_dataset == 5:
-        #    rand = round(rand_score(np.array([0]*y_pred.size), y_pred), 3)
-        #    classprop = round(accuracy_score(np.array([0]*y_pred.size), y_pred), 3)
-        #else:
-        #    rand = round(rand_score(y, y_pred), 3)
-        #    classprop = round(accuracy_score(y, y_pred), 3)
-        #file = open(f"F:/resultados_clusters/toydataset_metrics.txt", 'a')
-        #file.write(f"{i_dataset},{name},{rand},{classprop}\n")
-        
-        plt.subplot(len(datasets), len(clustering_algorithms), plot_num)
-        if i_dataset == 0:
-            plt.title(name, size=18)
-        colors = np.array(
-            list(
-                islice(
-                    cycle(
-                        [
-                            "#377eb8",
-                            "#ff7f00",
-                            "#4daf4a",
-                            "#f781bf",
-                            "#a65628",
-                            "#984ea3",
-                            "#999999",
-                            "#e41a1c",
-                            "#dede00",
-                        ]
-                    ),
-                    int(max(y_pred) + 1),
-                )
-            )
-        )
-        # add black color for outliers (if any)
-        colors = np.append(colors, ["#000000"])
-        plt.scatter(X[:, 0], X[:, 1], s=10, color=colors[y_pred])
-
-        plt.xlim(-2.5, 2.5)
-        plt.ylim(-2.5, 2.5)
-        plt.xticks(())
-        plt.yticks(())
-        plt.text(
-            0.99,
-            0.01,
-            ("%.2fs" % (t1 - t0)).lstrip("0"),
-            transform=plt.gca().transAxes,
-            size=15,
-            horizontalalignment="right",
-        )
-        plot_num += 1
-plt.show()
-# %%
+                        index=False)    

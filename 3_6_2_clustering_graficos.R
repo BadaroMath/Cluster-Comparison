@@ -222,8 +222,8 @@ g0 <- compound_K_means |>
     guide = 'none'
   ) +
   xlab(NULL) +
-  ylab(NULL) +
   ggtitle("Rótulos") +
+  ylab("Compound") +
   theme(plot.title = element_text(hjust = 0.5, size = 8))
 
 
@@ -310,7 +310,7 @@ g0_1 <- aggregation_K_means |>
   theme_void() +
   scale_color_discrete(labels = palette, guide = 'none') +
   xlab(NULL) +
-  ylab(NULL)
+  ylab("Aggregation")
 
 
 
@@ -374,7 +374,7 @@ g0_2 <- pathbased_K_means |>
   theme_void() +
   scale_color_discrete(labels = palette, guide = 'none') +
   xlab(NULL) +
-  ylab(NULL)
+  ylab("PathBased")
 
 
 g11 <- pathbased_K_means |> 
@@ -432,10 +432,11 @@ g15 <- pathbased_Fuzzy_C_means |>
 g0_3 <- s2_K_means |> 
   ggplot(aes(X0, X1, color = factor(labels))) +
   geom_point(size = 0.2) +
-  theme_void() +
+  #theme_void() +
   scale_color_discrete(labels = palette, guide = 'none') +
   xlab(NULL) +
-  ylab(NULL)
+  ylab("S2") +
+  theme_void()
 
 
 g16 <- s2_K_means |> ggplot(aes(X0, X1, color = factor(Y_0))) +
@@ -503,7 +504,7 @@ g0_4 <- flame_K_means |>
   theme_void() +
   scale_color_discrete(labels = palette, guide = 'none') +
   xlab(NULL) +
-  ylab(NULL)
+  ylab("Flame")
 
 
 g21 <- flame_K_means |> 
@@ -566,7 +567,7 @@ g0_5 <- face_K_means |>
   theme_void() +
   scale_color_discrete(labels = palette, guide = 'none') +
   xlab(NULL) +
-  ylab(NULL)
+  ylab("Face")
 
 
 g26 <- face_K_means |> 

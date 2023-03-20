@@ -6,46 +6,61 @@ library("fclust")
 library("plotly")
 library(cowplot)
 library(dplyr)
-setwd("F:\TG2\results\toy_results")
+options(scipen=999)
+setwd("F:/TG2/results/toy_results")
 
 
 circle_K_means <- read_csv("toydataset_K-means_0_results.csv")
-circle_Fuzzy_C_means <- read_csv("toydataset_Fuzzy_C-means_0_results.csv")
+circle_Fuzzy_C_means <- read_csv("toydataset_Fuzzy_C-means_0_results.csv")%>%
+  mutate(
+    Y = apply(select(., starts_with("Y_")), 1,
+              function(x) which.max(x) - 1)
+  )
 circle_Spectral_Clustering <- read_csv("toydataset_Spectral_Clustering_0_results.csv")
 circle_DBSCAN <- read_csv("toydataset_DBSCAN_0_results.csv")
-#circle_DBSCAN$Y_0[which(circle_DBSCAN$Y_0==-1)] <- NA
 circle_Gaussian_Mixture <- read_csv("toydataset_Gaussian_Mixture_0_results.csv")
-
 moon_K_means <- read_csv("toydataset_K-means_1_results.csv")
-moon_Fuzzy_C_means <- read_csv("toydataset_Fuzzy_C-means_1_results.csv")
+moon_Fuzzy_C_means <- read_csv("toydataset_Fuzzy_C-means_1_results.csv")%>%
+  mutate(
+    Y = apply(select(., starts_with("Y_")), 1,
+              function(x) which.max(x) - 1)
+  )
 moon_Spectral_Clustering <- read_csv("toydataset_Spectral_Clustering_1_results.csv")
 moon_DBSCAN <- read_csv("toydataset_DBSCAN_1_results.csv")
-#moon_DBSCAN$Y_0[which(moon_DBSCAN$Y_0==-1)] <- NA
 moon_Gaussian_Mixture <- read_csv("toydataset_Gaussian_Mixture_1_results.csv")
-
 varied_K_means <- read_csv("toydataset_K-means_2_results.csv")
-varied_Fuzzy_C_means <- read_csv("toydataset_Fuzzy_C-means_2_results.csv")
+varied_Fuzzy_C_means <- read_csv("toydataset_Fuzzy_C-means_2_results.csv")%>%
+  mutate(
+    Y = apply(select(., starts_with("Y_")), 1,
+              function(x) which.max(x) - 1)
+  )
 varied_Spectral_Clustering <- read_csv("toydataset_Spectral_Clustering_2_results.csv")
 varied_DBSCAN <- read_csv("toydataset_DBSCAN_2_results.csv")
-#varied_DBSCAN$Y_0[which(varied_DBSCAN$Y_0==-1)] <- NA
 varied_Gaussian_Mixture <- read_csv("toydataset_Gaussian_Mixture_2_results.csv")
-
 aniso_K_means <- read_csv("toydataset_K-means_3_results.csv")
-aniso_Fuzzy_C_means <- read_csv("toydataset_Fuzzy_C-means_3_results.csv")
+aniso_Fuzzy_C_means <- read_csv("toydataset_Fuzzy_C-means_3_results.csv")%>%
+  mutate(
+    Y = apply(select(., starts_with("Y_")), 1,
+              function(x) which.max(x) - 1)
+  )
 aniso_Spectral_Clustering <- read_csv("toydataset_Spectral_Clustering_3_results.csv")
 aniso_DBSCAN <- read_csv("toydataset_DBSCAN_3_results.csv")
-#aniso_DBSCAN$Y_0[which(aniso_DBSCAN$Y_0==-1)] <- NA
 aniso_Gaussian_Mixture <- read_csv("toydataset_Gaussian_Mixture_3_results.csv")
-
 blobs_K_means <- read_csv("toydataset_K-means_4_results.csv")
-blobs_Fuzzy_C_means <- read_csv("toydataset_Fuzzy_C-means_4_results.csv")
+blobs_Fuzzy_C_means <- read_csv("toydataset_Fuzzy_C-means_4_results.csv")%>%
+  mutate(
+    Y = apply(select(., starts_with("Y_")), 1,
+              function(x) which.max(x) - 1)
+  )
 blobs_Spectral_Clustering <- read_csv("toydataset_Spectral_Clustering_4_results.csv")
 blobs_DBSCAN <- read_csv("toydataset_DBSCAN_4_results.csv")
-#blobs_DBSCAN$Y_0[which(blobs_DBSCAN$Y_0==-1)] <- NA
 blobs_Gaussian_Mixture <- read_csv("toydataset_Gaussian_Mixture_4_results.csv")
-
 no_struct_K_means <- read_csv("toydataset_K-means_5_results.csv")
-no_struct_Fuzzy_C_means <- read_csv("toydataset_Fuzzy_C-means_5_results.csv")
+no_struct_Fuzzy_C_means <- read_csv("toydataset_Fuzzy_C-means_5_results.csv")%>%
+  mutate(
+    Y = apply(select(., starts_with("Y_")), 1,
+              function(x) which.max(x) - 1)
+  )
 no_struct_Spectral_Clustering <- read_csv("toydataset_Spectral_Clustering_5_results.csv")
 no_struct_DBSCAN <- read_csv("toydataset_DBSCAN_5_results.csv")
 no_struct_Gaussian_Mixture <- read_csv("toydataset_Gaussian_Mixture_5_results.csv")
@@ -62,13 +77,13 @@ g0 <- circle_K_means |> ggplot(aes(X0, X1, color = factor(labels))) +
   theme_void() + 
   scale_color_discrete(labels = c("red", "green", "blue"),guide = 'none') +
   xlab(NULL) + 
-  ylab(NULL) +
+  ylab("noise_circles") +
   ggtitle("Rótulos") +
   theme(plot.title = element_text(hjust = 0.5, size = 8))
 
 circle_K_means_RI = round(RandIndex(circle_K_means$labels, circle_K_means$Y_0)$AR, 2)
 circle_K_means_CP = round(ClassProp(circle_K_means$labels, circle_K_means$Y_0), 2)
-g1 <- circle_K_means |> ggplot(aes(X0, X1, color = Y_0)) +
+g1 <- circle_K_means |> ggplot(aes(X0, X1, color = as.factor(Y_0))) +
   geom_point(size = 0.5) + 
   theme_void() + 
   scale_color_discrete(labels = c("red", "green", "blue"),guide = 'none') +
@@ -145,9 +160,10 @@ g5 <- ggplot(circle_Fuzzy_C_means, aes(X0, X1, color = colors)) +
 g0_1 <- moon_K_means |> ggplot(aes(X0, X1, color = factor(labels))) +
   geom_point(size = 0.5) + 
   theme_void() + 
+  scale_color_discrete(labels = c("red", "green", "blue"),guide = 'none') +
   scale_color_discrete(labels = c("red", "green"),guide = 'none') +
   xlab(NULL) + 
-  ylab(NULL) 
+  ylab("noisy_moons") 
 
 moon_K_means_RI = round(RandIndex(moon_K_means$labels, moon_K_means$Y_0)$AR, 2)
 moon_K_means_CP = round(ClassProp(moon_K_means$labels, moon_K_means$Y_0), 2)
@@ -219,8 +235,9 @@ g0_2 <- varied_K_means |> ggplot(aes(X0, X1, color = factor(labels))) +
   geom_point(size = 0.5) + 
   theme_void() + 
   scale_color_discrete(labels = c("red", "green", "blue"),guide = 'none') +
+  scale_color_discrete(labels = c("red", "green", "blue"),guide = 'none') +
   xlab(NULL) + 
-  ylab(NULL) 
+  ylab("varied") 
 
 varied_K_means_RI = round(RandIndex(varied_K_means$labels, varied_K_means$Y_0)$AR, 2)
 varied_K_means_CP = round(ClassProp(varied_K_means$labels, varied_K_means$Y_0), 2)
@@ -289,9 +306,10 @@ g15 <- varied_Fuzzy_C_means |> ggplot(aes(X0, X1, color = colors)) +
 g0_3 <- aniso_K_means |>ggplot(aes(X0, X1, color = factor(labels))) +
   geom_point(size = 0.5) + 
   theme_void() + 
+  scale_color_discrete(labels = c("red", "green", "blue"),guide = 'none') +
   scale_color_discrete(labels = c("red", "blue", "green"),guide = 'none') +
   xlab(NULL) + 
-  ylab(NULL) 
+  ylab("aniso") 
 
 
 aniso_K_means_RI = round(RandIndex(aniso_K_means$labels, aniso_K_means$Y_0)$AR, 2)
@@ -371,8 +389,9 @@ g0_4 <- blobs_K_means |> ggplot(aes(X0, X1, color = factor(labels))) +
   geom_point(size = 0.5) + 
   theme_void() + 
   scale_color_discrete(labels = c("red", "green", "blue"),guide = 'none') +
+  scale_color_discrete(labels = c("red", "green", "blue"),guide = 'none') +
   xlab(NULL) + 
-  ylab(NULL) 
+  ylab("blobs") 
 
 blobs_K_means_RI = round(RandIndex(blobs_K_means$labels, blobs_K_means$Y_0)$AR, 2)
 blobs_K_means_CP = round(ClassProp(blobs_K_means$labels, blobs_K_means$Y_0), 2)
@@ -443,8 +462,9 @@ g0_5 <- no_struct_K_means |> ggplot(aes(X0, X1, color = factor(labels))) +
   geom_point(size = 0.5) + 
   theme_void() + 
   scale_color_discrete(labels = c("red", "green", "blue"),guide = 'none') +
+  scale_color_discrete(labels = c("red", "green", "blue"),guide = 'none') +
   xlab(NULL) + 
-  ylab(NULL) 
+  ylab("no_struct") 
 
 no_struct_K_means_RI = round(RandIndex(no_struct_K_means$labels, no_struct_K_means$Y_0)$AR, 2)
 no_struct_K_means_CP = round(ClassProp(no_struct_K_means$labels, no_struct_K_means$Y_0), 2)
@@ -527,6 +547,6 @@ for (i in 1:length(plots)) {
 
 g <- plot_grid(plotlist = plots)
 
-ggsave("plot.pdf", g, width = 6, height  = 6)
+ggsave("plot2.png", g, width = 6, height  = 6)
 
 

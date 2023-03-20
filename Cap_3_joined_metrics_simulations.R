@@ -101,57 +101,26 @@ join <- function(BarOmega, K, P, N) {
   
 
 
-
 grid_bomg <- expand.grid(BarOmega = seq(0, 0.6, 0.01),
                          K = c(3),
                          P = c(5),
                          N = c(5000))
-grid_n <- expand.grid(BarOmega = c(0, 0.05, 0.1, 0.15, 0.2),
-                    K = c(3),
-                    P = c(5),
-                    N = c(100, 500, 1000, 5000, 50000, 1000000))
 grid_k <- expand.grid(BarOmega = c(0, 0.05, 0.1, 0.15, 0.2),
                       K = seq(2, 40),
                       P = c(3),
                       N = c(5000))
-grid_p1 <- expand.grid(BarOmega = c(0),
+grid_p <- expand.grid(BarOmega = c(0),
                       K = c(3),
                       P = c(seq(2,30, 2), seq(30, 200, 10)),
                       N = c(5000))
-grid_p2 <- expand.grid(BarOmega = c(0.05),
-                       K = c(3),
-                       P = c(seq(2,20, 2), seq(30, 70, 10)),
-                       N = c(5000))
-grid_p3 <- expand.grid(BarOmega = c(0.1),
-                       K = c(3),
-                       P = c(seq(2,20, 2), seq(30, 50, 10)),
-                       N = c(5000))
-grid_p4 <- expand.grid(BarOmega = c(0.15),
-                       K = c(3),
-                       P = c(seq(2,20, 2), seq(30, 40, 10)),
-                       N = c(5000))
-grid_p5 <- expand.grid(BarOmega = c(0.2),
-                       K = c(3),
-                       P = c(seq(2,20, 2), seq(30, 30, 10)),
-                       N = c(5000))
-grid_kp <- expand.grid(BarOmega = c(0),
-                       K = c(3, 5, 7, 10, 15, 20, 25),
-                       P = c(3, 5, 8, 10, 15, 30, 50),
-                       N = c(10000))
-grid_pn <- expand.grid(BarOmega = c(0),
-                       K = c(3),
-                       P = c(3, 5, 8, 10, 15, 30, 50),
-                       N = c(1000, 5000, 50000, 1000000))
+grid_n <- expand.grid(BarOmega = 0,
+                      K = 3,
+                      P = 5,
+                      N = c(seq(100, 5000, 100), seq(5000, 100000, 10000), seq(100000, 2000000, 100000))
+)
 
-
-merged_grid <- rbind(grid_bomg, grid_n, grid_k, grid_p1, grid_p2, grid_p3, grid_p4, grid_p5, grid_kp, grid_pn)
-
-
+merged_grid <- rbind(grid_bomg,grid_p, grid_n)
 merged_grid <- as.data.frame(merged_grid)
 merged_grid <- distinct(merged_grid, .keep_all = TRUE)
 
-gridn <- expand.grid(BarOmega = 0,
-                     K = 3,
-                     P = 5,
-                     N = c(seq(953000, 1000000, 1000)))
-apply(grid_bomg, 1, function(x) join(x[1], x[2], x[3], x[4]))
+apply(merged_grid, 1, function(x) join(x[1], x[2], x[3], x[4]))

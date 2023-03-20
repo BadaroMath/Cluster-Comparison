@@ -8,10 +8,8 @@ from sklearn.metrics import rand_score, accuracy_score, adjusted_rand_score
 from sklearn import cluster, datasets, mixture
 from sklearn.neighbors import kneighbors_graph
 from sklearn.preprocessing import StandardScaler
-from itertools import cycle, islice
 from fcmeans import FCM
-import matplotlib.cm as cm
-import matplotlib
+
 np.random.seed(0)
 
 # ============
@@ -209,91 +207,4 @@ for i_dataset, (dataset, algo_params) in enumerate(datasets):
             classprop = round(accuracy_score(y, y_pred), 3)
         file = open(f"J:/resultados_clusters/toydataset_metrics.txt", 'a')
         file.write(f"{i_dataset},{name},{rand},{classprop}\n")
-        plt.subplot(len(datasets), len(clustering_algorithms), plot_num)
-        if i_dataset == 0:
-            plt.title(name, size=18)
-        if name == "Fuzzy C-means": 
-            if y is not None:
-                colors = np.array(
-                        list(
-                            islice(
-                                cycle(
-                                    [
-                                        "#377eb8",
-                                        "#ff7f00",
-                                        "#4daf4a",
-                                        "#f781bf",
-                                        "#a65628",
-                                        "#984ea3",
-                                        "#999999",
-                                        "#e41a1c",
-                                        "#dede00",
-                                    ]
-                                ),
-                                int(max(y) + 1),
-                            )
-                        )
-                    )
-            else:
-                colors = np.array(
-                        list(
-                            islice(
-                                cycle(
-                                    [
-                                        "#377eb8",
-                                        "#ff7f00",
-                                        "#4daf4a",
-                                        "#f781bf",
-                                        "#a65628",
-                                        "#984ea3",
-                                        "#999999",
-                                        "#e41a1c",
-                                        "#dede00",
-                                    ]
-                                ),
-                                1,
-                            )
-                        )
-                    )                    
-            cmap = matplotlib.colors.ListedColormap(colors)
-            plt.scatter(X[:, 0], X[:, 1], s=10, c=y_pred[:,0], cmap=cmap)               
-        else:
-            colors = np.array(
-                list(
-                    islice(
-                        cycle(
-                            [
-                                "#377eb8",
-                                "#ff7f00",
-                                "#4daf4a",
-                                "#f781bf",
-                                "#a65628",
-                                "#984ea3",
-                                "#999999",
-                                "#e41a1c",
-                                "#dede00",
-                            ]
-                        ),
-                        int(max(y_pred) + 1),
-                    )
-                )
-            )
-            # add black color for outliers (if any)
-            colors = np.append(colors, ["#000000"])
-            plt.scatter(X[:, 0], X[:, 1], s=10, color=colors[y_pred])
-
-        plt.xlim(-2.5, 2.5)
-        plt.ylim(-2.5, 2.5)
-        plt.xticks(())
-        plt.yticks(())
-        plt.text(
-            0.99,
-            0.01,
-            ("%.2fs" % (t1 - t0)).lstrip("0"),
-            transform=plt.gca().transAxes,
-            size=15,
-            horizontalalignment="right",
-        )
-        plot_num += 1
-
-plt.show()
+        file.close()
