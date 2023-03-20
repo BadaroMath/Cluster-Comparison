@@ -1,5 +1,5 @@
 import multiprocessing
-from Cap_3__partitioning_clusters import clustering_K
+from Cap_3_partitioning_clusters import clustering_K
 from Cap_3_density_clusters import search_density
 import numpy as np
 
