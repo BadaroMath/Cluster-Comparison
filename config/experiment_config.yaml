@@ -1,0 +1,89 @@
+# Clustering Analysis Experiment Configuration
+
+# Output directories
+output:
+  base_dir: "data/results"
+  figures_dir: "data/results/figures"
+  metrics_dir: "data/results/metrics"
+  clusters_dir: "data/results/clusters"
+
+# Data generation parameters
+data_generation:
+  synthetic:
+    base_path: "data/synthetic"
+    
+  real_datasets:
+    base_path: "data/real"
+    datasets: ["compound", "aggregation", "pathbased", "s2", "flame", "face"]
+
+# Experimental grids
+experiments:
+  bar_omega_variation:
+    bar_omega: [0.0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6]
+    K: [3]
+    P: [5]
+    N: [5000]
+    
+  cluster_variation:
+    bar_omega: [0.0]
+    K: [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 35, 40]
+    P: [3]
+    N: [5000]
+    
+  dimension_variation:
+    bar_omega: [0.0]
+    K: [3]
+    P: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200]
+    N: [5000]
+    
+  sample_variation:
+    bar_omega: [0.0]
+    K: [3]
+    P: [5]
+    N: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000, 3100, 3200, 3300, 3400, 3500, 3600, 3700, 3800, 3900, 4000, 4100, 4200, 4300, 4400, 4500, 4600, 4700, 4800, 4900, 5000, 15000, 25000, 35000, 45000, 55000, 65000, 75000, 85000, 95000, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000, 1100000, 1200000, 1300000, 1400000, 1500000, 1600000, 1700000, 1800000, 1900000, 2000000]
+
+# Clustering algorithms configuration
+algorithms:
+  kmeans:
+    n_init: 10
+    max_iter: 10000
+    random_state: 42
+    
+  fuzzy_cmeans:
+    max_iter: 150
+    error: 1e-5
+    random_state: 42
+    
+  gaussian_mixture:
+    covariance_type: "full"
+    max_iter: 100
+    random_state: 42
+    
+  dbscan:
+    eps_range: [0.05, 12.0]
+    eps_step: 0.05
+    min_samples_range: [1, 50]
+    min_samples_step: 2
+    
+  spectral:
+    eigen_solver: "arpack"
+    affinity: "nearest_neighbors"
+    n_neighbors_range: [2, 50]
+
+# Evaluation metrics
+metrics:
+  - "adjusted_rand_score"
+  - "rand_score" 
+  - "silhouette_score"
+  - "dunn_index"
+  - "variation_of_information"
+  - "classification_proportion"
+
+# Parallel processing
+parallel:
+  n_processes: 8
+  
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
