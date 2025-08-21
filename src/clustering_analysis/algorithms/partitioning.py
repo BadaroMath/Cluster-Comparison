@@ -99,11 +99,18 @@ class FuzzyCMeansClusterer(BaseClusterer):
     
     def predict(self, X: np.ndarray) -> np.ndarray:
         """Predict cluster labels."""
-        if self.model is None:
+        if not hasattr(self, 'cluster_centers_'):
             raise ValueError("Model must be fitted before prediction")
         
-        # For FCM, we return the hard clustering (most likely cluster)
-        return self.labels_
+        # Use scikit-fuzzy to predict membership for new data
+        u, u0, d, jm, p, fpc = fuzz.cluster.cmeans_predict(
+            X.T, self.cluster_centers_, 2, 
+            error=self.params['error'], 
+            maxiter=self.params['max_iter']
+        )
+        
+        # Return hard clustering (most likely cluster)
+        return np.argmax(u, axis=0)
     
     def get_membership_matrix(self) -> Optional[np.ndarray]:
         """Get fuzzy membership matrix."""
