@@ -5,7 +5,7 @@ scipy>=1.7.0
 
 # Machine learning
 scikit-learn>=1.0.0
-fcmeans>=1.7.0
+fuzzy-c-means>=1.7.0
 
 # Visualization
 matplotlib>=3.4.0
