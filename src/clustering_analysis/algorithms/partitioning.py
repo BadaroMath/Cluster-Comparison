@@ -6,7 +6,7 @@ from typing import Optional
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 from sklearn.preprocessing import StandardScaler
-from fuzzy_c_means import FCM
+from fcmeans import FCM
 from loguru import logger
 
 from .base import BaseClusterer
