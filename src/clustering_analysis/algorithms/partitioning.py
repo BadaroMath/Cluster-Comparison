@@ -6,7 +6,7 @@ from typing import Optional
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 from sklearn.preprocessing import StandardScaler
-from fcmeans import FCM
+import skfuzzy as fuzz
 from loguru import logger
 
 from .base import BaseClusterer
@@ -79,12 +79,19 @@ class FuzzyCMeansClusterer(BaseClusterer):
         """Fit Fuzzy C-Means to data."""
         start_time = time.time()
         
-        self.model = FCM(n_clusters=self.params['n_clusters'])
-        self.model.fit(X)
+        # Use scikit-fuzzy for Fuzzy C-Means clustering
+        cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
+            X.T, self.params['n_clusters'], 2, 
+            error=self.params['error'], 
+            maxiter=self.params['max_iter']
+        )
+        
+        # Store results
+        self.cluster_centers_ = cntr
+        self.membership_matrix = u
         
         # Convert fuzzy memberships to hard labels
-        self.labels_ = np.argmax(self.model.u, axis=1)
-        self.membership_matrix = self.model.u
+        self.labels_ = np.argmax(u, axis=0)
         self.fit_time = time.time() - start_time
         
         logger.debug(f"Fuzzy C-Means fitted in {self.fit_time:.4f} seconds")
